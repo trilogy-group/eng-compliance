@@ -1,0 +1,14 @@
+name: Engineering Standards
+
+on: [pull_request, workflow_dispatch]
+
+jobs:
+  enforce-eng-standards:
+    name: Enforce Engineering standards
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check compliance
+        uses: trilogy-group/eng-compliance@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE_COLOR: 3
