@@ -1,0 +1,15 @@
+name: 'eng.compliance.action'
+description: 'Ensures a repository complies with the SE7 Engineering standard'
+author: 'Yousef Fadila'
+inputs:
+  repository:
+    description: 'Repository name with owner'
+    default: ${{ github.repository }}
+    required: false
+  default_branch:
+    description: 'name of default branch'
+    default: ${{github.event.repository.default_branch }}
+    required: false
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
