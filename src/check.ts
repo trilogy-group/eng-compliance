@@ -1,12 +1,12 @@
 export interface CheckOptions {
-    mandatory: boolean
+  mandatory: boolean
 }
 
 export const checks: Record<string, CheckOptions> = {}
 
 export const check = (options: CheckOptions) => (
-	_target: Object,
-	propertyKey: string
+  _target: Object,
+  propertyKey: string
 ): void => {
-    checks[propertyKey] = options
+  checks[propertyKey] = options
 }
