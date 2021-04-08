@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
+  "name": "eng-compliance-action",
   "version": "0.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "eng compliance action",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
