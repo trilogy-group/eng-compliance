@@ -77,18 +77,15 @@ export class ComplianceChecker {
 
           let checkOutcome: Result | undefined
           let message
-          for (let attempt = 0; checkOutcome == null; attempt++) {
-            // check the status
-            try {
-              await checkFunc.call(rule, product)
-              checkOutcome = Result.PASS
-            } catch (error) {
-              checkOutcome = checkOptions.mandatory ? Result.FAIL : Result.WARN
-              if (error instanceof AssertionError) {
-                message = error.message
-              } else {
-                message = `${humanCheckNameVal}: ${error.message}`
-              }
+          try {
+            await checkFunc.call(rule, product)
+            checkOutcome = Result.PASS
+          } catch (error) {
+            checkOutcome = checkOptions.mandatory ? Result.FAIL : Result.WARN
+            if (error instanceof AssertionError) {
+              message = error.message
+            } else {
+              message = `${humanCheckNameVal}: ${error.message}`
             }
           }
 
@@ -106,7 +103,7 @@ export class ComplianceChecker {
         runOutcome = Math.max(runOutcome, ruleOutcome)
       }
     }
-
+    reporter.reportRun(product, runOutcome);
     console.log('')
     process.exitCode = runOutcome < Result.FAIL ? 0 : 1
   }
