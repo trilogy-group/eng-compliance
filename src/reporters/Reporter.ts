@@ -28,4 +28,8 @@ export abstract class Reporter {
   reportRule(ruleName: string, outcome: Result) {
     // do not report by default
   }
+
+  reportRun(product: Product, outcome: Result) {
+      // do not report by default
+  }
 }

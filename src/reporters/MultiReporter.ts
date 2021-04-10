@@ -35,4 +35,8 @@ export class MultiReporter extends Reporter {
   reportRule(ruleName: string, outcome: Result) {
     this.reporters.forEach(reporter => reporter.reportRule(ruleName, outcome))
   }
+
+  reportRun(product: Product, outcome: Result) {
+      this.reporters.forEach(reporter => reporter.reportRun(product, outcome))
+  }
 }
