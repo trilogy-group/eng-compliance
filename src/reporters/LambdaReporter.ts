@@ -1,5 +1,6 @@
+import { HttpClient } from "@actions/http-client";
+import { throws } from "assert";
 import { CheckOptions } from "../check";
-
 import { Result } from "../ComplianceChecker";
 import { Product } from "../model/Product";
 import { Reporter } from "./Reporter";
@@ -8,37 +9,43 @@ interface ResultRecord {
   level: string,
   rule?: string,
   check?: string,
-  mandatory?:string,
+  mandatory?: string,
   result: string,
   reason?: string
 }
 
 interface RequestBody {
-    repo_owner?: string,
-    repo_name?: string,
-    start_time?: string,
-    end_time?: string,
-    result?: ResultRecord[]
+  repo_owner?: string,
+  repo_name?: string,
+  start_time?: string,
+  end_time?: string,
+  result?: ResultRecord[]
 }
 
 export class LambdaReporter extends Reporter {
 
   private readonly uri: string;
-  private readonly key: string;
+  private readonly keyHeader: any;
+  private readonly http: HttpClient;
   private body: RequestBody;
 
   constructor() {
     super();
-    if (process.env.INPUT_ENG_COMPLIANCE_LAMBDA_URI== null) throw new Error('INPUT_ENG_COMPLIANCE_LAMBDA_URI must be specified');
+    if (process.env.INPUT_ENG_COMPLIANCE_LAMBDA_URI == null) throw new Error('INPUT_ENG_COMPLIANCE_LAMBDA_URI must be specified');
     if (process.env.INPUT_ENG_COMPLIANCE_LAMBDA_KEY == null) throw new Error('INPUT_ENG_COMPLIANCE_LAMBDA_KEY must be specified');
 
     this.uri = process.env.INPUT_ENG_COMPLIANCE_LAMBDA_URI as string;
-    this.key = process.env.INPUT_ENG_COMPLIANCE_LAMBDA_KEY as string;
     this.body = {};
+    this.http = new HttpClient('eng-compliance-github');
+
+    let key = process.env.INPUT_ENG_COMPLIANCE_LAMBDA_KEY as string;
+    this.keyHeader = {
+      ['x-api-key']: key
+    }
   }
 
   static enabled(): boolean {
-    return process.env.INPUT_ENG_COMPLIANCE_LAMBDA_URI != null && process.env.INPUT_ENG_COMPLIANCE_LAMBDA_KEY !=null ;
+    return process.env.INPUT_ENG_COMPLIANCE_LAMBDA_URI != null && process.env.INPUT_ENG_COMPLIANCE_LAMBDA_KEY != null;
   }
 
   startRun(product: Product) {
@@ -51,7 +58,7 @@ export class LambdaReporter extends Reporter {
   }
 
   reportCheck(ruleName: string, checkName: string, checkOptions: CheckOptions, outcome: Result, message?: string) {
-    let check_record: ResultRecord= {
+    let check_record: ResultRecord = {
       level: "check",
       rule: ruleName,
       check: checkName,
@@ -63,7 +70,7 @@ export class LambdaReporter extends Reporter {
   }
 
   reportRule(ruleName: string, outcome: Result) {
-    let rule_record: ResultRecord= {
+    let rule_record: ResultRecord = {
       level: "rule",
       rule: ruleName,
       result: Result[outcome]
@@ -73,7 +80,7 @@ export class LambdaReporter extends Reporter {
   }
 
   reportRun(product: Product, outcome: Result) {
-    let run_record: ResultRecord= {
+    let run_record: ResultRecord = {
       level: "repo",
       result: Result[outcome]
     }
@@ -85,7 +92,13 @@ export class LambdaReporter extends Reporter {
 
   async publishRecords(): Promise<void> {
     this.body.end_time = Date.now().toString();
-   // TODO POST TO LAMBDA ENDPOINT
+
+    try {
+      await this.http.postJson(this.uri, this.body, this.keyHeader);
+    } catch (error) {
+      console.error('Error writing to Lambda', error);
+    }
+
   }
 
 }
