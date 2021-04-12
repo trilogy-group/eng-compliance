@@ -2,6 +2,7 @@ import {Result} from '../ComplianceChecker'
 import {Reporter} from './Reporter'
 import Chalk from 'chalk'
 import {CheckOptions} from '../check'
+import { Product } from '../model/Product';
 
 export class ConsoleReporter extends Reporter {
   startRule(ruleName: string) {
@@ -52,8 +53,8 @@ export class ConsoleReporter extends Reporter {
     return Chalk.inverse(this.color(result)(Result[result]))
   }
 
-  reportRun(outcome: Result) {
-    const outcomeText = this.renderOverallOutcome(outcome)
-    console.log(`\n${Chalk.inverse(outcomeText)}`)
-  }
+  reportRun(product: Product, outcome: Result) {
+    const outcomeText = this.renderOverallOutcome(outcome);
+    console.log(`\n${Chalk.inverse(outcomeText)}`);
+}
 }

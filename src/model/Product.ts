@@ -1,6 +1,6 @@
 import assert from 'assert'
 
-import {BranchProtection, Repo} from './Repo'
+import {Repo} from './Repo'
 
 export class Product {
   readonly name
@@ -11,6 +11,6 @@ export class Product {
   }
 
   toString(): string {
-    return this.repo.id || 'new product'
+    return this.repo.id
   }
 }
