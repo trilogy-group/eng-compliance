@@ -1,4 +1,4 @@
-name: Engineering Standards
+name: Enforce Engineering standards
 
 on: [pull_request, workflow_dispatch]
 
@@ -12,3 +12,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FORCE_COLOR: 3
+          ENG_COMPLIANCE_CLOUD_NOTIFIER_URI: ${{ secrets.ENG_COMPLIANCE_CLOUD_NOTIFIER_URI }}
+          ENG_COMPLIANCE_CLOUD_NOTIFIER_KEY: ${{ secrets.ENG_COMPLIANCE_CLOUD_NOTIFIER_KEY }}
