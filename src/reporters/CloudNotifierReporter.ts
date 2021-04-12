@@ -31,28 +31,26 @@ export class CloudNotifierReporter extends Reporter {
 
   constructor() {
     super();
-    if (process.env.INPUT_ENG_COMPLIANCE_CLOUD_NOTIFIER_URI == null || process.env.INPUT_ENG_COMPLIANCE_CLOUD_NOTIFIER_KEY == null)  {
+    if (process.env.ENG_COMPLIANCE_CLOUD_NOTIFIER_URI == null || process.env.ENG_COMPLIANCE_CLOUD_NOTIFIER_KEY == null)  {
       throw new Error('INPUT_ENG_COMPLIANCE_LAMBDA_URI must be specified');
     }
 
-    this.uri = process.env.INPUT_ENG_COMPLIANCE_CLOUD_NOTIFIER_URI as string;
+    this.uri = process.env.ENG_COMPLIANCE_CLOUD_NOTIFIER_URI as string;
     this.body = {};
     this.http = new HttpClient('eng-compliance-github');
 
-    const key = process.env.INPUT_ENG_COMPLIANCE_CLOUD_NOTIFIER_KEY as string;
+    const key = process.env.ENG_COMPLIANCE_CLOUD_NOTIFIER_KEY as string;
     this.keyHeader = {
       ['x-api-key']: key
     }
   }
 
   static enabled(): boolean {
-    return process.env.INPUT_ENG_COMPLIANCE_CLOUD_NOTIFIER_URI != null && process.env.INPUT_ENG_COMPLIANCE_CLOUD_NOTIFIER_KEY != null;
+    return process.env.ENG_COMPLIANCE_CLOUD_NOTIFIER_URI != null && process.env.ENG_COMPLIANCE_CLOUD_NOTIFIER_KEY != null;
   }
 
   startRun(product: Product) {
     this.body = {
-      repo_owner: product.repo.owner,
-      repo_name: product.repo.name,
       start_time: Date.now().toString(),
       result: []
     };
@@ -88,12 +86,14 @@ export class CloudNotifierReporter extends Reporter {
 
     this.body.result?.push(runRecord);
 
-    this.publishRecords();
+    this.publishRecords(product);
   }
 
-  async publishRecords(): Promise<void> {
-    this.body.end_time = Date.now().toString();
-
+  async publishRecords(product: Product): Promise<void> {
+    this.body.end_time =  Date.now().toString();
+    this.body.repo_name = product.repo?.name;
+    this.body.repo_owner = product.repo?.owner;
+ 
     try {
       await this.http.postJson(this.uri, this.body, this.keyHeader);
     } catch (error) {
