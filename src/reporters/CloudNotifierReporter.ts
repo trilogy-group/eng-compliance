@@ -59,7 +59,7 @@ export class CloudNotifierReporter extends Reporter {
   }
 
   reportCheck(ruleName: string, checkName: string, checkOptions: CheckOptions, outcome: Result, message?: string) {
-    let checkRecord: ResultRecord = {
+    const checkRecord: ResultRecord = {
       level: "check",
       rule: ruleName,
       check: checkName,
@@ -71,7 +71,7 @@ export class CloudNotifierReporter extends Reporter {
   }
 
   reportRule(ruleName: string, outcome: Result) {
-    let ruleRecord: ResultRecord = {
+    const ruleRecord: ResultRecord = {
       level: "rule",
       rule: ruleName,
       result: Result[outcome]
@@ -81,7 +81,7 @@ export class CloudNotifierReporter extends Reporter {
   }
 
   reportRun(product: Product, outcome: Result) {
-    let runRecord: ResultRecord = {
+    const runRecord: ResultRecord = {
       level: "repo",
       result: Result[outcome]
     }

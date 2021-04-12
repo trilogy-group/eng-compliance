@@ -36,8 +36,9 @@ export class ComplianceChecker {
 
   async main() {
     const reporters: Reporter[] = [new ConsoleReporter()]
-    if (CloudNotifierReporter.enabled())   
-        reporters.push(new CloudNotifierReporter())
+    if (CloudNotifierReporter.enabled()){   
+      reporters.push(new CloudNotifierReporter())
+    }
 
     const reporter = new MultiReporter(reporters)
     const product = new Product()
