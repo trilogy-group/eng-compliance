@@ -5,6 +5,7 @@ import {inject, injectable} from 'tsyringe'
 import {checks} from './check'
 import {Product} from './model/Product'
 import {ConsoleReporter} from './reporters/ConsoleReporter'
+import {CloudNotifierReporter} from './reporters/CloudNotifierReporter'
 import {MultiReporter} from './reporters/MultiReporter'
 import {Reporter} from './reporters/Reporter'
 import {
@@ -35,8 +36,11 @@ export class ComplianceChecker {
 
   async main() {
     const reporters: Reporter[] = [new ConsoleReporter()]
-    const reporter = new MultiReporter(reporters)
+    if (CloudNotifierReporter.enabled()){   
+      reporters.push(new CloudNotifierReporter())
+    }
 
+    const reporter = new MultiReporter(reporters)
     const product = new Product()
     reporter.startRun(product)
     let runOutcome = Result.PASS
