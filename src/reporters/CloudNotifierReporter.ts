@@ -1,10 +1,10 @@
 import { HttpClient } from "@actions/http-client";
 
-import { CheckOptions } from "../check";
-import { Result } from "../ComplianceChecker";
-import { Config } from "../Config";
-import { Product } from "../model/Product";
-import { Reporter } from "./Reporter";
+import { CheckOptions } from "../check"
+import { Result } from "../ComplianceChecker"
+import { Config } from "../Config"
+import { Product } from "../model/Product"
+import { Reporter } from "./Reporter"
 
 interface ResultRecord {
   level: string;
