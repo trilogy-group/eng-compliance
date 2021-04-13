@@ -37,9 +37,9 @@ export class CloudNotifierReporter extends Reporter {
       throw new Error('Cloud notifier is not enabled');
     }
 
-    this.uri = Config.get_cloud_notifier_uri() as string;
+    this.uri = Config.getCloudNotifierURI() as string;
     this.http = new HttpClient('eng-compliance-github');
-    const key = Config.get_cloud_notifier_key() as string;
+    const key = Config.getCloudNotifierKey() as string;
     this.keyHeader = {
       ['x-api-key']: key
     }

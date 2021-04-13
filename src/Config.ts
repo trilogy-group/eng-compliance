@@ -1,6 +1,5 @@
-import {singleton, injectable, inject} from 'tsyringe'
 
-export interface ConfigInterface {
+interface ConfigInterface {
     cloud_notifier_uri?: string;
     cloud_notifier_key?: string;
 }
@@ -10,7 +9,7 @@ export class Config {
     private static cloud_notifier_key?: string;
 
     static init() {
-        const _configObjectString =  process.env.ENG_COMPLIANCE_CONFIG_OBJECT || '{}';
+        const _configObjectString = process.env.ENG_COMPLIANCE_CONFIG_OBJECT || '{}';
         const configObject: ConfigInterface = JSON.parse(_configObjectString);
         Config.cloud_notifier_uri = configObject.cloud_notifier_uri;
         Config.cloud_notifier_key = configObject.cloud_notifier_key;
@@ -20,11 +19,11 @@ export class Config {
         return Config.cloud_notifier_uri != null && Config.cloud_notifier_key != null;
     }
 
-    static get_cloud_notifier_uri(): string | undefined {
+    static getCloudNotifierURI(): string | undefined {
         return Config.cloud_notifier_uri;
-    } 
-    
-    static get_cloud_notifier_key(): string | undefined {
+    }
+
+    static getCloudNotifierKey(): string | undefined {
         return Config.cloud_notifier_key;
-    } 
+    }
 }
