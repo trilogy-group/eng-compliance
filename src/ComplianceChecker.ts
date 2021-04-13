@@ -17,6 +17,7 @@ import {
 import {GitHubService} from './services/GitHubService'
 
 import './rules'
+import { Config } from './Config'
 
 export enum Result {
   PASS,
@@ -36,7 +37,7 @@ export class ComplianceChecker {
 
   async main() {
     const reporters: Reporter[] = [new ConsoleReporter()]
-    if (CloudNotifierReporter.enabled()){   
+    if (Config.isCloudNotifierEnabled()){   
       reporters.push(new CloudNotifierReporter())
     }
 

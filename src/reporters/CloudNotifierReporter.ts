@@ -2,6 +2,7 @@ import { HttpClient } from "@actions/http-client";
 
 import { CheckOptions } from "../check";
 import { Result } from "../ComplianceChecker";
+import { Config } from "../Config";
 import { Product } from "../model/Product";
 import { Reporter } from "./Reporter";
 
@@ -27,19 +28,18 @@ export class CloudNotifierReporter extends Reporter {
   private readonly uri: string;
   private readonly keyHeader: object;
   private readonly http: HttpClient;
-  private body: RequestBody;
+  private body: RequestBody = {};
 
   constructor() {
     super();
-    if (process.env.ENG_COMPLIANCE_CLOUD_NOTIFIER_URI == null || process.env.ENG_COMPLIANCE_CLOUD_NOTIFIER_KEY == null)  {
-      throw new Error('INPUT_ENG_COMPLIANCE_LAMBDA_URI must be specified');
+    
+    if (!Config.isCloudNotifierEnabled){
+      throw new Error('Cloud notifier is not enabled');
     }
 
-    this.uri = process.env.ENG_COMPLIANCE_CLOUD_NOTIFIER_URI as string;
-    this.body = {};
+    this.uri = Config.get_cloud_notifier_uri() as string;
     this.http = new HttpClient('eng-compliance-github');
-
-    const key = process.env.ENG_COMPLIANCE_CLOUD_NOTIFIER_KEY as string;
+    const key = Config.get_cloud_notifier_key() as string;
     this.keyHeader = {
       ['x-api-key']: key
     }
@@ -96,6 +96,7 @@ export class CloudNotifierReporter extends Reporter {
  
     try {
       await this.http.postJson(this.uri, this.body, this.keyHeader);
+      console.log('posting the result to cloudNotifier is completed');
     } catch (error) {
       console.error('Error writing to cloudNotifier', error);
     }
